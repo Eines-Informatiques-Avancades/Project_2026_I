@@ -3,7 +3,7 @@
 List of participants:
 
 - JONATHAN BARRIENTOS ANDRADE
-- ADRIÀ BRÚ I CORTÉS
+- ADRIÀ BRÚ I CORTÉS (cooligula git hub id)
 - MARC FREIXER REALP
 - ADRIAN LLAMAS JARAMILLO
 

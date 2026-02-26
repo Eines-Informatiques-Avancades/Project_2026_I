@@ -2,10 +2,10 @@
 
 List of participants:
 
-- JONATHAN BARRIENTOS ANDRADE 
+- JONATHAN BARRIENTOS ANDRADE (J-dot-Barrientos)
 - ADRIÀ BRÚ I CORTÉS (cooligula) Main Leader
-- MARC FREIXER REALP
-- ADRIAN LLAMAS JARAMILLO
+- MARC FREIXER REALP (Fresco4)
+- ADRIAN LLAMAS JARAMILLO (AdrianLLJ)
 
 List of tasks: Responsible of task
 - Initialization: JONATHAN BARRIENTOS ANDRADE

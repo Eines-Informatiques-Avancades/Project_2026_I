@@ -1,5 +1,5 @@
-main : constants.o nonbonded.o initconfig.o bonded.o energy.o main.o
-	gfortran -o main main.o constants.o nonbonded.o initconfig.o bonded.o energy.o
+main.out : constants.o nonbonded.o initconfig.o bonded.o energy.o main.o
+	gfortran -o main.out main.o constants.o nonbonded.o initconfig.o bonded.o energy.o
 
 main.o : main.f90 constants.o nonbonded.o initconfig.o bonded.o energy.o
 	gfortran -c main.f90

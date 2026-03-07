@@ -7,12 +7,25 @@ module io_module
                 subroutine readInput()
                         open(10, file = "input.dat")
                         read(10,*) N
+                        read(10,*) TEMP
+                        read(10,*) BOX
                         read(10,*) BLEN
                         read(10,*) BANG
+                        read(10,*) SIG
+                        read(10,*) EPS
+                        read(10,*) MASS
+                        read(10,*) SHIFT
+                        read(10,*) RC
                         close(10)
 
                         ! Convert degrees to radians
                         BANG = BANG * PI / 180.d0
+
+                        ! Define HBOX as half of the simulation box length
+                        HBOX = 0.5d0*BOX
+
+                        ! Define actual cut-off radius
+                        RC = min(RC*SIG, HBOX)
                 end subroutine readInput
 
                 subroutine writeXYZ(filename)

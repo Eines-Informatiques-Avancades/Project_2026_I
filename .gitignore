@@ -2,3 +2,5 @@
 *.mod
 *.out
 *.exe
+*.xyz
+modules/*.mod

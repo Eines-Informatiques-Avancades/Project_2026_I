@@ -119,7 +119,7 @@ CLUSTER_EMAIL ?= missing_email@ub.edu
 .PHONY: sync-up cluster-run sync-down cluster-check clean-cluster
 
 # Push local code to cluster
-sync-up: get-pip.py
+sync-up:
 	@if [ "$(CLUSTER_USER)" = "missing_user" ]; then echo "Error: .env file missing or CLUSTER_USER not set" && exit 1; fi
 	@echo "Uploading code to cluster..."
 	rsync -avz --exclude '.venv' --exclude 'build' --exclude 'results' --exclude '.git' --exclude '.env' ./ $(CLUSTER_USER)@$(CLUSTER_HOST):$(CLUSTER_DIR)

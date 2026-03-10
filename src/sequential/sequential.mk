@@ -19,7 +19,8 @@ MOD_DIR_ENER := $(SEQ_DIR)/energy
 MOD_DIR_MC := $(SEQ_DIR)/MC_update
 
 # Compiler flags specific to sequential
-SEQ_FLAGS := -I$(MOD_DIR_INIT) \
+SEQ_FLAGS := -O3 \
+             -I$(MOD_DIR_INIT) \
              -I$(MOD_DIR_ENER) \
              -I$(MOD_DIR_MC)   \
              -J$(MOD_OUT_DIR)

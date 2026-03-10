@@ -56,6 +56,7 @@ module mcloop
         ntry = 0
         naccept = 0
         do i=1, n_mcs
+            if (mod(i,100).eq.0) print*, "MC step:", i
             ! Each MC steps corresponds to (on average) trying to change
             ! each dihedral once
             do j=1, NATTEMPTS

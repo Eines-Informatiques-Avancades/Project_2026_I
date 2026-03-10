@@ -66,8 +66,10 @@ module mcloop
             end do
             if (i.ge.N_MCEQUI) then
                 ! Only store data during "production" phase
-                call sample(i)
-                call writeXYZ("systemConfig.xyz", i)
+                if (mod(i, NSAVE) == 0) then
+                    call sample(i)
+                    call writeXYZ("systemConfig.xyz", i)
+                end if
             end if
         end do
     end subroutine

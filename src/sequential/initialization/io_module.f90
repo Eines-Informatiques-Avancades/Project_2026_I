@@ -56,6 +56,7 @@ module io_module
                         read(*,*) N_MCEQUI
                         read(*,*) N_MCPROD
                         read(*,*) NATTEMPTS
+                        read(*,*) NSAVE
 
                         ! Convert degrees to radians
                         BANG = BANG * PI / 180.d0

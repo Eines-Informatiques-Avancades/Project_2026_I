@@ -53,7 +53,7 @@ module bonded
         write(30, '(A)') "i, DANG(i), utors(i)"
             do i = 1, N - 3
                 call enerTorsion(i, utors)
-                call writeDihedrals(i, utors)
+                !call writeDihedrals(i, utors)
                 eb = eb + utors
             end do
         close(30)

@@ -36,20 +36,29 @@ program mainglobal
     call writeXYZ("systemConfig.xyz", 0)
     ! System initialization
 
+
+    ! Open log file to write basic results of the simulation
+    path_log = get_filepath("simulation.log")
+    open(91, file = trim(path_log), position="append", status="unknown")
+    
     ! Energies initialization
     call shiftLenJon()
-    print*, 'RC, ECUT:', RC, ECUT
+    write(91, *) 'RC, ECUT:', RC, ECUT
     call totEnergy(En, Eb, Enb)
-    print*, "Initial Enb, Eb, En:", Enb, Eb, En
+    write(91, *), "Initial Enb, Eb, En:", Enb, Eb, En
     ! Energies initialization
 
     ! MC evolution
     call runMC(ntry, naccept)
-    print*, "Final: ntry, naccept:", ntry, naccept
+    write(91, *), "Final: ntry, naccept:", ntry, naccept
     ! MC evolution
 
-    ! Test
+    ! Test final energies and acceptance ratio
     call totEnergy(En, Eb, Enb)
-    print*, "Final Enb, Eb, En:", Enb, Eb, En
+    write(91, *) "Final Enb, Eb, En:", Enb, Eb, En
+    write(91, *) "Attempts, accepted, ratio(%):", ntry, naccept, 100.d0*naccept/ntry
+    ! Test final energies and acceptance ratio
+
+    close(91)
 
 end program mainglobal

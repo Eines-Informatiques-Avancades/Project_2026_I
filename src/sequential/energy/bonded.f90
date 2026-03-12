@@ -52,11 +52,11 @@ module bonded
 
         ! Instead of hardcoding the output file directory, it is obtained from the first CLI argument
         ! First we get the argument
-        filepath = get_filepath("dihedrals.dat")
+        ! filepath = get_filepath("dihedrals.dat")
 
         eb = 0.d0
-        open(30, file = trim(filepath), status="unknown", position="append", action="write")
-        write(30, '(A)') "i, DANG(i), utors(i)"
+        ! open(30, file = trim(filepath), status="unknown", position="append", action="write")
+        ! write(30, '(A)') "i, DANG(i), utors(i)"
             do i = 1, N - 3
                 call enerTorsion(i, utors)
                 !call writeDihedrals(i, utors)

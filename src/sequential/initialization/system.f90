@@ -1,7 +1,7 @@
 module system
         implicit none
 
-        integer :: N, SHIFT
+        integer :: N, SHIFT, initRandom
         integer :: N_MCEQUI, N_MCPROD, NATTEMPTS, NSAVE
         double precision :: TEMP, BOX, HBOX, BLEN, BANG
         double precision :: EPS, SIG, MASS, RC

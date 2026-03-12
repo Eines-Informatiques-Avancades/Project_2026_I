@@ -13,12 +13,22 @@ module init_config
                 end subroutine allocateSystem
 
                 subroutine initDihedrals()
+                        double precision :: r
                         integer :: i
 
                         if (N > 3) then
-                                do i = 1, N-3
-                                    DANG(i) = PI
-                                end do
+                                if (initRandom.eq.1) then
+                                        ! Random dihedral initialisation
+                                        do i = 1, N-3
+                                                call random_number(r)
+                                                DANG(i) = PI * (2.d0 * r - 1)
+                                        end do
+                                else
+                                        !Initialises all dihedrals to pi
+                                        do i = 1, N-3
+                                                DANG(i) = PI
+                                        end do
+                                end if
                         end if
                 end subroutine initDihedrals
 

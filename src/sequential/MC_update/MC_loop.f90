@@ -167,7 +167,7 @@ module mcloop
         path_ener = get_filepath("energy.dat")
         open(40, file = trim(path_ener), position="append", status="unknown")
         ! Write Step and Total Energy (En)
-        write(40, '(I8, F14.6)') step, En
+        write(40, '(I8, F18.6)') step, En
         close(40)
 
         ! Torsion angle

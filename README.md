@@ -126,7 +126,7 @@ make clean-cluster
 2. For each _MC step_, it tries to change the current state of the system 
     * Proposing a change $\phi_k \to \phi_k + \delta\phi$ for dihedral $1\leq\phi\leq N-1$.
     * Compute the associated energy change $\Delta E$.
-    * Accept or reject the change with relative probability $\min(1, e^{\Delta E/T})$ (Metropolis rule).
+    * Accept or reject the change with relative probability $\min(1, e^{-\Delta E/T})$ (Metropolis rule).
     * Repeat for a total number of attemps per MC step (ideally 1 attemps per degree of freedom).
 3. Sample the relevant observables (energy, end-to-end distance, ...) at a given sampling frequency.
 4. Repeat for a total of number of _equilibration_ and _production_ steps.

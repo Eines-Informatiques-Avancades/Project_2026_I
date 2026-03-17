@@ -12,7 +12,7 @@ module mcloop
                 !  BONDED INTERACTION
                 ! --------------------
                 ! Since only one k-th-dihedral  is changed per iteration, 
-                ! tonly the etorsion energy difference of this k-dihedral
+                ! only the torsion energy difference of this k-dihedral
                 ! needs to be computed.
                 ! ---------------------
                 ! NONBONDED INTERACTION

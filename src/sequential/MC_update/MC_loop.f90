@@ -92,14 +92,17 @@ module mcloop
         R_old = R
         
         ! Check we need to recompute the Verlet list before the rotation
-        if (isVlist.eq.1) call checkUpdateVlist(k, R_old(:,k+3))
+        if (isVlist.eq.1) then 
+            call checkUpdateVlist(k, R_old(:,k+3))
+        end if
 
         ! compute *old* torsion and non-bonded energies
         call enerTorsion(k, utors_old_k)
         enb_old = 0.d0
         do I = 1, k+1
             if (isVlist.eq.1) then
-                call enerPartVlist(R(1, I), R(2, I), R(3, I), k-1, enI)
+                ! before was k-1 as input instead of I
+                call enerPartVlist(R(1, I), R(2, I), R(3, I), I, enI)
             else if (isVlist.eq.0) then
                 call enerPart(R(1, I), R(2, I), R(3, I), I, k-1, enI)
             end if
@@ -113,14 +116,16 @@ module mcloop
         DANG(k) = DANG(k) + deltaPhi
 
         ! Check we need to recompute the Verlet list after the rotation
-        if (isVlist.eq.1) call checkUpdateVlist(k, R(:,k+3))
+        if (isVlist.eq.1) then 
+            call checkUpdateVlist(k, R(:,k+3))
+        end if
 
         ! compute *new* torsion and non-bonded energies
         call enerTorsion(k, utors_new_k)
         enb_new = 0.d0
         do I = 1, k+1
             if (isVlist.eq.1) then
-                call enerPartVlist(R(1, I), R(2, I), R(3, I), k-1, enI)
+                call enerPartVlist(R(1, I), R(2, I), R(3, I), I, enI)
             else if (isVlist.eq.0) then
                 call enerPart(R(1, I), R(2, I), R(3, I), I, k-1, enI)
             end if
@@ -181,7 +186,7 @@ module mcloop
         path_ener = get_filepath("energy.dat")
         open(40, file = trim(path_ener), position="append", status="unknown")
         ! Write Step and Total Energy (En)
-        write(40, '(I8, F18.6)') step, En
+        write(40, '(I8, F25.6)') step, En
         close(40)
 
         ! Torsion angle

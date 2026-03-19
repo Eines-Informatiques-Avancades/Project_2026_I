@@ -177,7 +177,9 @@ module nonBonded
 
         ! Check if need to update
         ! TODO : check if RV-RC needs to be (RV-RC)/2
-        if (drkp3.gt.(RV-RC)) call new_vlist()
+        if (drkp3.gt.(RV-RC)/2.d0) then 
+            call new_vlist()
+        end if
 
     end subroutine checkUpdateVlist
 
@@ -219,8 +221,8 @@ module nonBonded
         end do
 
         do i=1, N-1
-            ! Shift of 3 to ensure we skip particles related by the same dihedral
-            do j=i+3, N
+            ! Shift of 4 to ensure we skip particles related by the same dihedral
+            do j=i+4, N
                 dpos(:) = R(:, i) - R(:, j)
                 ! Apply PBC (minimum image convention) for the neigbhours
                 call minImgConv(dpos(1), dpos(2), dpos(3))

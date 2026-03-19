@@ -51,8 +51,6 @@ program mainglobal
     if (isVlist.eq.1) then 
         call allocVerlet()
         call new_vlist()
-        write(91, *) "Initialized Verlet list of test particle 1:"
-        write(91, *) list(1, :)
     end if
     ! Verlet list initialization
     

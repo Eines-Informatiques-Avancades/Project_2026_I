@@ -258,18 +258,21 @@ module nonBonded
         enI = 0.d0 
         do neighIj = 1, nlist(I)
             j = list(I, neighIj)
-            ! Relative displacement between particles I, j
-            dx = Xi - R(1, j)
-            dy = Yi - R(2, j)
-            dz = Zi - R(3, j)
+            ! this if was not here before (is to avoid double counting)
+            if (j.gt.I) then
+                ! Relative displacement between particles I, j
+                dx = Xi - R(1, j)
+                dy = Yi - R(2, j)
+                dz = Zi - R(3, j)
 
-            !PBC (minimum image convention)
-            call minImgConv(dx, dy, dz)
+                !PBC (minimum image convention)
+                call minImgConv(dx, dy, dz)
 
-            ! Lennard-Jones interaction between particles I, j
-            r2 = dx*dx + dy*dy + dz*dz
-            call enerLenJon(r2, enIj)
-            enI = enI + enIj
+                ! Lennard-Jones interaction between particles I, j
+                r2 = dx*dx + dy*dy + dz*dz
+                call enerLenJon(r2, enIj)
+                enI = enI + enIj
+            end if
         end do
     end subroutine enerPartVlist
 end module nonBonded

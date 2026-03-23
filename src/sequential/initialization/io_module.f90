@@ -77,7 +77,8 @@ end subroutine readInput
 
 subroutine writeXYZ(filename, iframe)
         ! Writes snapshot of the system in the current state (iframe) to visualize in VMD.
-        ! We work in unwrapped coordinates R, but apply PBC to R for visualization only
+        ! We work in unwrapped coordinates R, but apply PBC to R for visualization only.
+        ! (Coordinates are transformed from reduced length units to angstroms)
         character(len=*), intent(in) :: filename
         integer :: i, iframe
         character(len=512) :: fullpath
@@ -90,9 +91,9 @@ subroutine writeXYZ(filename, iframe)
         write(20, *) iframe
         do i = 1, N
                 ! Write coords with PBC: 0<= R(:,i)<= BOX
-                write(20, '(A, 3F12.6)') "C", mod(R(1, i)+BOX,BOX), &
-                                                mod(R(2, i)+BOX,BOX), &
-                                                mod(R(3, i)+BOX,BOX)
+                write(20, '(A, 3F12.6)') "C", mod(R(1, i)+BOX,BOX)*3.9d0, &
+                                                mod(R(2, i)+BOX,BOX)*3.9d0, &
+                                                mod(R(3, i)+BOX,BOX)*3.9d0
         end do
 
         close(20)

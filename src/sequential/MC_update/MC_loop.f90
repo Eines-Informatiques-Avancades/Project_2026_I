@@ -12,7 +12,7 @@ module mcloop
                 !  BONDED INTERACTION
                 ! --------------------
                 ! Since only one k-th-dihedral  is changed per iteration, 
-                ! tonly the etorsion energy difference of this k-dihedral
+                ! only the torsion energy difference of this k-dihedral
                 ! needs to be computed.
                 ! ---------------------
                 ! NONBONDED INTERACTION
@@ -65,12 +65,13 @@ module mcloop
                 ! accept or reject the proposed configuration
                 call accept_reject(k, R_old, deltaPhi, phi_old, dE, ntry, naccept, E_new)
             end do
-            if (i.ge.N_MCEQUI) then
-                ! Only store data during "production" phase
-                if (mod(i, NSAVE) == 0) then
-                    call sample(i)
-                    call writeXYZ("systemConfig.xyz", i)
-                end if
+            ! Sample observables during equilibration & production to track changes
+            if (mod(i, NSAVE) == 0) then
+                call sample(i)
+            end if
+            if ((i.ge.N_MCEQUI).and.(mod(i, NSAVE) == 0)) then
+                ! Only store config. during production (to see final configs.)
+                call writeXYZ("systemConfig.xyz", i) 
             end if
         end do
     end subroutine
@@ -90,12 +91,22 @@ module mcloop
         call proposeDihedral(k, deltaPhi)
         ! Store old positions and dihedral involved in the update
         R_old = R
+        
+        ! Check we need to recompute the Verlet list before the rotation
+        if (isVlist.eq.1) then 
+            call checkUpdateVlist(k, R_old(:,k+3))
+        end if
 
         ! compute *old* torsion and non-bonded energies
         call enerTorsion(k, utors_old_k)
         enb_old = 0.d0
         do I = 1, k+1
-            call enerPart(R(1, I), R(2, I), R(3, I), I, k-1, enI)
+            if (isVlist.eq.1) then
+                ! before was k-1 as input instead of I
+                call enerPartVlist(R(1, I), R(2, I), R(3, I), I, enI)
+            else if (isVlist.eq.0) then
+                call enerPart(R(1, I), R(2, I), R(3, I), I, k-1, enI)
+            end if
             enb_old = enb_old + enI
         end do
 
@@ -105,11 +116,20 @@ module mcloop
         phi_old = DANG(k)
         DANG(k) = DANG(k) + deltaPhi
 
+        ! Check we need to recompute the Verlet list after the rotation
+        if (isVlist.eq.1) then 
+            call checkUpdateVlist(k, R(:,k+3))
+        end if
+
         ! compute *new* torsion and non-bonded energies
         call enerTorsion(k, utors_new_k)
         enb_new = 0.d0
         do I = 1, k+1
-            call enerPart(R(1, I), R(2, I), R(3, I), I, k-1, enI)
+            if (isVlist.eq.1) then
+                call enerPartVlist(R(1, I), R(2, I), R(3, I), I, enI)
+            else if (isVlist.eq.0) then
+                call enerPart(R(1, I), R(2, I), R(3, I), I, k-1, enI)
+            end if
             enb_new = enb_new + enI
         end do
 
@@ -167,7 +187,7 @@ module mcloop
         path_ener = get_filepath("energy.dat")
         open(40, file = trim(path_ener), position="append", status="unknown")
         ! Write Step and Total Energy (En)
-        write(40, '(I8, F18.6)') step, En
+        write(40, '(I8, F25.6)') step, En
         close(40)
 
         ! Torsion angle

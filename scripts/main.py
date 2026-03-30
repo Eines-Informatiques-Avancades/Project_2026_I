@@ -33,9 +33,12 @@ def main():
         data = np.loadtxt(energy_file)
         steps = data[:, 0]
         energy = data[:, 1] * EPSILON_KCAL_MOL
+<<<<<<< HEAD
         nonbond = data[:, 2] * EPSILON_KCAL_MOL
         bondener = data[:, 3] * EPSILON_KCAL_MOL
 
+=======
+>>>>>>> bb857665c640e3a32e0d643198d0e9847eceef18
         plt.figure(figsize = (10, 6))
         plt.plot(steps, energy, label = "Total", color = "#1f77b4", linewidth = 1.5)
         plt.xlabel("Monte Carlo Step")

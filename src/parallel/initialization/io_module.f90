@@ -19,11 +19,14 @@ subroutine init_io(rank)
         call get_command_argument(1, base_dir)
         if (trim(base_dir) == "") base_dir = "results"
         
-        ! Each process writes in its own folder
-        write(out_dir, '(A,"/replica_",I4.4)') trim(base_dir), rank
-
-        ! Create the directory if it doesn't exist
-        call system("mkdir -p " // trim(out_dir))
+        if (rank == 0) then
+            write(out_dir, '(A,"/ensemble")') trim(base_dir)
+            ! Create the directory
+            call system("mkdir -p " // trim(out_dir))
+        else
+            ! Keep dummy path to prevent path resolution crashes, but DON'T create the directory
+            write(out_dir, '(A,"/replica_",I4.4)') trim(base_dir), rank
+        end if
 end subroutine init_io
 
 function get_filepath(filename) result(filepath)
@@ -88,13 +91,15 @@ subroutine readInput()
 
 end subroutine readInput
 
-subroutine writeXYZ(filename, iframe)
+subroutine writeXYZ(filename, iframe, rank)
         ! Writes snapshot of the system in the current state (iframe) to visualize in VMD.
         ! We work in unwrapped coordinates R, but apply PBC to R for visualization only
         character(len=*), intent(in) :: filename
-        integer, intent(in) :: iframe
+        integer, intent(in) :: iframe, rank
         integer :: i
         character(len=512) :: fullpath
+
+        if (rank /= 0) return
 
         ! Get the full path: results folder + filename
         !fullpath = trim(out_dir) // "/" // trim(filename)

@@ -69,11 +69,11 @@ module mcloop
             end do
             ! Sample observables during equilibration & production to track changes
             if (mod(i, NSAVE) == 0) then
-                call sample(i)
+                call sample(i, rank, nproc)
             end if
             if ((i.ge.N_MCEQUI).and.(mod(i, NSAVE) == 0)) then
                 ! Only store config. during production (to see final configs.)
-                call writeXYZ("systemConfig.xyz", i) 
+                call writeXYZ("systemConfig.xyz", i, rank) 
             end if
 
             ! Try replica exchange
@@ -182,29 +182,16 @@ module mcloop
         end if
     end subroutine accept_reject
 
-    subroutine sample(step)
+    subroutine sample(step, rank, nproc)
         ! Extracts data during the "production" phase for statistical analysis
         implicit none
-        integer, intent(in) :: step
-        integer :: i
+        integer, intent(in) :: step, rank, nproc
+        integer :: i, ierr
         double precision :: Ree, Rg, Rcm(3)
         character(len=512) :: path_ener, path_tors, path_struct
-
-        ! Energy evolution
-        path_ener = get_filepath("energy.dat")
-        open(40, file = trim(path_ener), position="append", status="unknown")
-        ! Write Step and Total Energy (En)
-        write(40, '(I8, F25.6)') step, En
-        close(40)
-
-        ! Torsion angle
-        path_tors = get_filepath("torsions.dat")
-        open(41, file = trim(path_tors), position="append", status="unknown")
-        ! Write Step and all dihedral angles
-        do i = 1, N-3
-            write(41, '(I8, F14.6)') step, DANG(i)
-        end do
-        close(41)
+        
+        ! Dynamic buffers for gathered values
+        double precision :: all_En(nproc), all_Ree(nproc), all_Rg(nproc)
 
         !! End-to-end Distance and Radius of Gyration
         ! End-to-end Distance (Ree)
@@ -223,13 +210,33 @@ module mcloop
             Rg = Rg + sum((R(:, i) - Rcm)**2.d0)
         end do
         Rg = sqrt(Rg / dble(N))
+        
+        ! Gather physical properties from all replicas into Rank 0
+        call MPI_Gather(En, 1, MPI_DOUBLE_PRECISION, all_En, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+        call MPI_Gather(Ree, 1, MPI_DOUBLE_PRECISION, all_Ree, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
+        call MPI_Gather(Rg, 1, MPI_DOUBLE_PRECISION, all_Rg, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
 
-        path_struct = get_filepath("structure.dat")
-        open(42, file=trim(path_struct), position="append", status="unknown")
-        ! Write Step, Ree, and Rg
-        write(42, '(I8, F14.6, F14.6)') step, Ree, Rg
-        close(42)
+        if (rank == 0) then
+            ! Write step and ALL energies to single file
+            path_ener = get_filepath("energy.dat")
+            open(40, file = trim(path_ener), position="append", status="unknown")
+            write(40, *) step, all_En
+            close(40)
 
+            ! Write step and ALL structural properties to single file
+            path_struct = get_filepath("structure.dat")
+            open(42, file=trim(path_struct), position="append", status="unknown")
+            write(42, *) step, all_Ree, all_Rg
+            close(42)
+
+            ! Torsion angle (Rank 0 only, no MPI Gathering necessary)
+            path_tors = get_filepath("torsions.dat")
+            open(41, file = trim(path_tors), position="append", status="unknown")
+            do i = 1, N-3
+                write(41, '(I8, F14.6)') step, DANG(i)
+            end do
+            close(41)
+        end if
     end subroutine sample
 
     subroutine replica_exchange(rank, nproc, step)

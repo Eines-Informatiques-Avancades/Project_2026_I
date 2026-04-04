@@ -66,13 +66,15 @@ program mainglobal
     call initDihedrals()
     call initPolymer()
     call centerInBox()
-    call writeXYZ("systemConfig.xyz", 0)
+    call writeXYZ("systemConfig.xyz", 0, rank)
     ! System initialization
 
-    ! Log file for each replica
-    write(path_log, '(A,I4.4,A)') "simulation_", rank, ".log"
-    path_log = get_filepath(path_log)
-    open(91, file = trim(path_log), position="append", status="unknown")
+    ! Log file for Master
+    if (rank == 0) then
+        write(path_log, '(A,I4.4,A)') "simulation_", rank, ".log"
+        path_log = get_filepath(path_log)
+        open(91, file = trim(path_log), position="append", status="unknown")
+    end if
 
     ! Verlet list initialization
     if (isVlist.eq.1) then 
@@ -102,11 +104,13 @@ program mainglobal
     ! Final CPU counter
     call cpu_time(t2)
 
-    write(91, *) "Rank:", rank
-    write(91, *) "Attempts, accepted, ratio(%):", ntry, naccept, 100.d0*naccept/ntry
-    write(91, *) "Total CPU time:", t2-t1
+    if (rank == 0) then
+        write(91, *) "Rank:", rank
+        write(91, *) "Attempts, accepted, ratio(%):", ntry, naccept, 100.d0*naccept/ntry
+        write(91, *) "Total CPU time:", t2-t1
 
-    close(91)
+        close(91)
+    end if
 
     call MPI_Finalize(ierr)
 

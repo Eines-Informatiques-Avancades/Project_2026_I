@@ -40,10 +40,27 @@ else
     $(error "Invalid MODE. Use MODE=sequential or MODE=parallel")
 endif
 
+# If the first argument is "snapshot" we save the results (we check if a name is provided, if not, we use the date)
+ifeq ($(firstword $(MAKECMDGOALS)),snapshot)
+  # The rest are arguments
+  SNAPSHOT_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # Make them do nothing to avoid errors
+  $(eval $(SNAPSHOT_ARGS):;@:)
+endif
+
 # Phony targets (always assumed to be outdated)
-.PHONY: all build run plot clean clean_data
+.PHONY: all build run plot snapshot clean clean_data
 
 all: build
+
+snapshot:
+	@NAME="$(SNAPSHOT_ARGS)"; \
+	if [ -z "$$NAME" ]; then \
+		NAME=$$(date +"%Y%m%d_%H%M%S"); \
+	fi; \
+	echo "Creating snapshot: $$NAME"; \
+	mkdir -p archive/$$NAME; \
+	cp -r results/* archive/$$NAME/ 2>/dev/null || echo "No results to archive."
 
 # Compile TARGET_EXEC
 build: $(TARGET_EXEC)

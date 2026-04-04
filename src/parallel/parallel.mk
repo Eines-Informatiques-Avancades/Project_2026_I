@@ -5,44 +5,44 @@
 # Compiler
 FC := mpifort
 
-# Project root
+# Project roots
 PAR_DIR := src/parallel
+COM_DIR := src/common
 
 # Build directories
 BUILD_DIR := build
 PAR_OBJ_DIR := $(BUILD_DIR)/obj/parallel
 MOD_OUT_DIR := $(BUILD_DIR)/modules
 
-# Source directories
-MOD_DIR_INIT := $(PAR_DIR)/initialization
-MOD_DIR_ENER := $(PAR_DIR)/energy
-MOD_DIR_MC   := $(PAR_DIR)/MC_update
-
 # Compiler flags
 PAR_FLAGS := -O3 \
-             -I$(MOD_DIR_INIT) \
-             -I$(MOD_DIR_ENER) \
-             -I$(MOD_DIR_MC) \
+             -I$(PAR_DIR)/initialization \
+             -I$(PAR_DIR)/energy \
+             -I$(PAR_DIR)/MC_update \
+             -I$(COM_DIR)/initialization \
+             -I$(COM_DIR)/energy \
+             -I$(COM_DIR)/MC_update \
              -J$(MOD_OUT_DIR)
 
 # Executable
 PAR_EXEC := $(BUILD_DIR)/mainglobal_mpi.exe
 
 # Source files
-PAR_SRC := $(MOD_DIR_INIT)/constants.f90 \
-           $(MOD_DIR_INIT)/system.f90 \
-           $(MOD_DIR_INIT)/io_module.f90 \
-           $(MOD_DIR_INIT)/init_config.f90 \
-           $(MOD_DIR_INIT)/centerPolymer.f90 \
-           $(MOD_DIR_ENER)/nonbonded.f90 \
-           $(MOD_DIR_ENER)/bonded.f90 \
-           $(MOD_DIR_ENER)/energy.f90 \
-           $(MOD_DIR_MC)/MC_proposal.f90 \
-           $(MOD_DIR_MC)/MC_loop.f90 \
+PAR_SRC := $(COM_DIR)/initialization/constants.f90 \
+           $(PAR_DIR)/initialization/system.f90 \
+           $(PAR_DIR)/initialization/io_module.f90 \
+           $(COM_DIR)/initialization/init_config.f90 \
+           $(COM_DIR)/initialization/centerPolymer.f90 \
+           $(PAR_DIR)/energy/nonbonded.f90 \
+           $(COM_DIR)/energy/bonded.f90 \
+           $(COM_DIR)/energy/energy.f90 \
+           $(COM_DIR)/MC_update/MC_proposal.f90 \
+           $(PAR_DIR)/MC_update/MC_loop.f90 \
            $(PAR_DIR)/mainglobal.f90
 
-# Object files (mirroring folder structure)
-PAR_OBJ := $(patsubst $(PAR_DIR)/%.f90, $(PAR_OBJ_DIR)/%.o, $(PAR_SRC))
+# Object files (mirroring folder structure taking PAR_DIR and COM_DIR sources into PAR_OBJ_DIR)
+PAR_OBJ := $(patsubst $(PAR_DIR)/%.f90, $(PAR_OBJ_DIR)/%.o, \
+           $(patsubst $(COM_DIR)/%.f90, $(PAR_OBJ_DIR)/%.o, $(PAR_SRC)))
 
 # =========================
 # Build executable
@@ -58,8 +58,12 @@ $(PAR_OBJ_DIR)/%.o: $(PAR_DIR)/%.f90
 	@mkdir -p $(dir $@) $(MOD_OUT_DIR)
 	$(FC) $(PAR_FLAGS) -c $< -o $@
 
+$(PAR_OBJ_DIR)/%.o: $(COM_DIR)/%.f90
+	@mkdir -p $(dir $@) $(MOD_OUT_DIR)
+	$(FC) $(PAR_FLAGS) -c $< -o $@
+
 # =========================
 # Clean build files
 # =========================
-clean:
-	rm -rf $(BUILD_DIR)
+clean-par:
+	rm -rf $(PAR_OBJ_DIR) $(PAR_EXEC) $(MOD_OUT_DIR)/*.mod

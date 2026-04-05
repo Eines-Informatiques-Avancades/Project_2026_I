@@ -78,6 +78,7 @@ subroutine readInput()
         read(*,*) isVlist
         read(*,*) MAX_TEMP
         read(*,*) N_SWAP
+        read(*,*) nproc_per_replica
 
         ! Convert degrees to radians
         BANG = BANG * PI / 180.d0
@@ -149,6 +150,7 @@ subroutine broadcastInput()
         call MPI_Bcast(maxDih, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
         call MPI_Bcast(MAX_TEMP, 1, MPI_DOUBLE_PRECISION, 0, MPI_COMM_WORLD, ierr)
         call MPI_Bcast(N_SWAP, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+        call MPI_Bcast(nproc_per_replica, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
 end subroutine broadcastInput
 
 end module io_module

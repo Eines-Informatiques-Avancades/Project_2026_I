@@ -19,4 +19,5 @@
 1           ! isVlist: 1 or 0 to use Verlet lists to compute the non-bonded energy
 3.0			! MAX_TEMP: max temp for Replica Exchange
 10			! N_SWAP: number of steps between replica exchange attempts
+2           ! nproc_per_replica : processors working on each replica (adjust it based on available cores)
 ! EOF (This line is necessary for the compilation in old compilers, aka the one available in cerqt)

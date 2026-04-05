@@ -18,18 +18,29 @@ program mainglobal
     use mcloop
 
     implicit none
-    integer :: ierr, rank, nproc
+    integer :: ierr, rank_world, nproc_world
+    integer :: num_replicas, color, rank_rep, REPLICA_COMM
     integer :: nseed, i
     integer, allocatable :: seed(:)
     double precision :: t1, t2
 	character(len=512) :: path_log
 
     call MPI_Init(ierr)
-    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-    call MPI_Comm_size(MPI_COMM_WORLD, nproc, ierr)
+    call MPI_Comm_rank(MPI_COMM_WORLD, rank_world, ierr)
+    call MPI_Comm_size(MPI_COMM_WORLD, nproc_world, ierr)
 
-    ! Start CPU counter
-    call cpu_time(t1)
+    !--Hierarchical MPI setup
+    num_replicas = nproc_world / nproc_per_replica
+    ! 'color' identifies the replica group (0, 1, 2...)
+    color = rank_world / nproc_per_replica
+    ! Split the global communicator into replica sub-communicators
+    call MPI_Comm_split(MPI_COMM_WORLD, color, rank_world, REPLICA_COMM, ierr)
+    ! Get rank within the local replica (0 to nproc_per_replica-1)
+    call MPI_Comm_rank(REPLICA_COMM, rank_rep, ierr)
+    ! ---Hierachical MPI setup
+
+    ! Start CPU counter (only on replica masters)
+    if (rank_rep .eq. 0) call cpu_time(t1)
 
     ! Different RNG per replica
     call random_seed(size=nseed)
@@ -41,7 +52,7 @@ program mainglobal
     ! Different RNG per replica
 
     ! IO (each replica writes in its own folder)
-    call init_io(rank)
+    call init_io(color)
 
     ! Leer parámetros solo en rank 0
     if (rank == 0) then
@@ -52,13 +63,13 @@ program mainglobal
     call broadcastInput()
 
     ! Verificación
-    if (rank == 0) then
-        print *, "Input broadcasted to", nproc, "replicas."
+    if (rank_world == 0) then
+        print *, "Input broadcasted to", num_replicas, "replicas."
     end if
 
     ! Distribute temperatures
-    if (nproc > 1) then
-        TEMP = TEMP * (MAX_TEMP / TEMP)**(dble(rank) / dble(nproc-1))
+    if (num_replicas > 1) then
+        TEMP = TEMP * (MAX_TEMP / TEMP)**(dble(color) / dble(num_replicas-1))
     end if
 
     ! System initialization
@@ -66,12 +77,12 @@ program mainglobal
     call initDihedrals()
     call initPolymer()
     call centerInBox()
-    call writeXYZ("systemConfig.xyz", 0, rank)
+    call writeXYZ("systemConfig.xyz", 0, color)
     ! System initialization
 
     ! Log file for Master
-    if (rank == 0) then
-        write(path_log, '(A,I4.4,A)') "simulation_", rank, ".log"
+    if (rank_rep == 0) then
+        write(path_log, '(A,I4.4,A)') "simulation_", color, ".log"
         path_log = get_filepath(path_log)
         open(91, file = trim(path_log), position="append", status="unknown")
     end if
@@ -102,16 +113,18 @@ program mainglobal
     ! Test final energies and acceptance ratio
 
     ! Final CPU counter
-    call cpu_time(t2)
+    if (rank_rep .eq. 0) call cpu_time(t2)
 
-    if (rank == 0) then
-        write(91, *) "Rank:", rank
+    if (rank_rep == 0) then
+        write(91, *) "Rank:", color
         write(91, *) "Attempts, accepted, ratio(%):", ntry, naccept, 100.d0*naccept/ntry
         write(91, *) "Total CPU time:", t2-t1
 
         close(91)
     end if
 
+    ! Cleanup
+    call MPI_Comm_free(REPLICA_COMM, ierr)
     call MPI_Finalize(ierr)
 
 end program mainglobal

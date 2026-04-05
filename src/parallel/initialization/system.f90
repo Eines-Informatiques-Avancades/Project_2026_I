@@ -2,7 +2,7 @@ module system
         implicit none
 
         integer :: N, SHIFT, initRandom, isVlist, MAX_NEIGH, N_SWAP
-        integer :: N_MCEQUI, N_MCPROD, NATTEMPTS, NSAVE
+        integer :: N_MCEQUI, N_MCPROD, NATTEMPTS, NSAVE, nproc_per_replica
         double precision :: TEMP, BOX, HBOX, BLEN, BANG, MAX_TEMP
         double precision :: EPS, SIG, MASS, RC, RV
         double precision :: maxDih

@@ -12,11 +12,12 @@
 500          ! MAX_NEIGH : estimated maximum number of neigbhours within rv to any particle
 1.5			! maxDih: maximum dihedral angle variation (degrees)
 1000		! N_MCEQUI: number of Monte Carlo step in equilibration (depends on maxDih)
-2000		! N_MCPROD: number of Monte Carlo steps in production
-350			! NATTEMPTS: number of attempts to change a dihedral angle per MC step
+1000		! N_MCPROD: number of Monte Carlo steps in production
+250			! NATTEMPTS: number of attempts to change a dihedral angle per MC step
 20			! NSAVE: for every NSAVE steps, 1 data point is stored
 1			! initRandom: 1 or 0 to initialise all dihedrals randomly or all dihedrals as pi
 1           ! isVlist: 1 or 0 to use Verlet lists to compute the non-bonded energy
 3.0			! MAX_TEMP: max temp for Replica Exchange
 10			! N_SWAP: number of steps between replica exchange attempts
+2           ! nproc_per_replica : processors working on each replica (adjust it based on available cores)
 ! EOF (This line is necessary for the compilation in old compilers, aka the one available in cerqt)

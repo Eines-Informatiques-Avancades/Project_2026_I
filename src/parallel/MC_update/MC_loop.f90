@@ -45,9 +45,9 @@ module mcloop
 
     contains
 
-    subroutine runMC(rank_world, nproc_world, ntry, naccept, REPLICA_COMM) 
+    subroutine runMC(rank_world, nproc_world, num_replicas, ntry, naccept, REPLICA_COMM) 
         ! Runs the basic Monte Carlo loops and stages (equilibration, production and sampling)
-        integer, intent(in) :: rank_world, nproc_world, REPLICA_COMM
+        integer, intent(in) :: rank_world, nproc_world, num_replicas, REPLICA_COMM
         integer :: ierr, rank_rep
         integer :: i, j, k, n_mcs
         integer, intent(inout) :: ntry, naccept
@@ -82,7 +82,7 @@ module mcloop
 
             ! Try replica exchange
             if (mod(i, N_SWAP) == 0) then
-                call replica_exchange(rank_world, nproc_world, i)
+                call replica_exchange(rank_world, nproc_world, num_replicas, i)
             end if
         end do
     end subroutine
@@ -228,16 +228,16 @@ module mcloop
         end if
     end subroutine accept_reject
 
-    subroutine sample(step, rank, nproc)
+    subroutine sample(step, rank, nproc_world)
         ! Extracts data during the "production" phase for statistical analysis
         implicit none
-        integer, intent(in) :: step, rank, nproc
+        integer, intent(in) :: step, rank, nproc_world
         integer :: i, ierr
         double precision :: Ree, Rg, Rcm(3)
         character(len=512) :: path_ener, path_tors, path_struct
         
         ! Dynamic buffers for gathered values
-        double precision :: all_En(nproc), all_Ree(nproc), all_Rg(nproc)
+        double precision :: all_En(nproc_world), all_Ree(nproc_world), all_Rg(nproc_world)
 
         !! End-to-end Distance and Radius of Gyration
         ! End-to-end Distance (Ree)
@@ -285,10 +285,10 @@ module mcloop
         end if
     end subroutine sample
 
-    subroutine replica_exchange(rank, nproc, step)
+    subroutine replica_exchange(rank_world, nproc_world, num_replicas, step)
         use nonBonded, only: new_vlist
         implicit none
-        integer, intent(in) :: rank, nproc, step
+        integer, intent(in) :: rank_world, nproc_world, num_replicas, step
         integer :: partner, ierr
         integer :: status(MPI_STATUS_SIZE)
         double precision :: E_me, E_partner
@@ -301,22 +301,22 @@ module mcloop
         ! Determine partner safely based on step counter
         if (mod(step/N_SWAP, 2) == 0) then
             ! Even pairs: 0-1, 2-3, 4-5
-            if (mod(rank, 2) == 0) then
-                partner = rank + 1
+            if (mod(rank_world, 2) == 0) then
+                partner = rank_world + 1
             else
-                partner = rank - 1
+                partner = rank_world - 1
             end if
         else
             ! Odd pairs: 1-2, 3-4, 5-6
-            if (mod(rank, 2) == 1) then
-                partner = rank + 1
+            if (mod(rank_world, 2) == 1) then
+                partner = rank_world + 1
             else
-                partner = rank - 1
+                partner = rank_world - 1
             end if
         end if
         
         ! Ensure boundary partners don't go out of bounds
-        if (partner >= 0 .and. partner < nproc) then
+        if (partner >= 0 .and. partner < nproc_world) then
             ! We have a valid swap pair
             E_me = En
             T_me = TEMP
@@ -331,8 +331,13 @@ module mcloop
                               MPI_COMM_WORLD, status, ierr)
                               
             ! Lower rank evaluates the Metropolis criterion
-            if (rank == min(rank, partner)) then
-                swap_prob = exp( (1.d0/T_me - 1.d0/T_partner) * (E_me - E_partner) )
+            if (rank_world == min(rank_world, partner)) then
+                ! If num_replicas =1 it reduces to see which replica has the lowest energy (Metropolis-like)
+                if (num_replicas > 1) then
+                    swap_prob = exp( (1.d0/T_me - 1.d0/T_partner) * (E_me - E_partner) )
+                else if (num_replicas == 1) then
+                    swap_prob = exp ((E_me - E_partner)/T_me)
+                end if
                 
                 if (swap_prob >= 1.d0) then
                     accept_swap = 1
@@ -347,7 +352,7 @@ module mcloop
             end if
             
             ! Broadcast decision to the higher rank
-            if (rank == min(rank, partner)) then
+            if (rank_world == min(rank_world, partner)) then
                 call MPI_Send(accept_swap, 1, MPI_INTEGER, partner, 2, MPI_COMM_WORLD, ierr)
                 swap_decision = accept_swap
             else

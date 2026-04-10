@@ -60,7 +60,9 @@ program mainglobal
     end if
 
     ! Enviar parámetros a todos los procesos
-    call broadcastInput()
+    if (rank_world == 0) then
+        call broadcastInput()
+    end if
 
     ! Verificación
     if (rank_world == 0) then
@@ -102,7 +104,7 @@ program mainglobal
     ! Energies initialization
 
     ! MC evolution
-    call runMC(rank_world, nproc_world, ntry, naccept, REPLICA_COMM)
+    call runMC(rank_world, nproc_world, num_replicas, ntry, naccept, REPLICA_COMM)
     ! write(91, *), "Final: ntry, naccept:", ntry, naccept
     ! MC evolution
 

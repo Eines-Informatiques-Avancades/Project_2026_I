@@ -300,7 +300,7 @@ module mcloop
         
         partner = -1
         
-        ! Determine partner safely based on step counter
+        ! Determine partner based on step counter
         if (mod(step/N_SWAP, 2) == 0) then
             ! Even pairs: 0-1, 2-3, 4-5
             if (mod(rank_world, 2) == 0) then

@@ -20,7 +20,7 @@ subroutine init_io(rank)
         if (trim(base_dir) == "") base_dir = "results"
         
         if (rank == 0) then
-            write(out_dir, '(A,"/ensemble")') trim(base_dir)
+            write(out_dir, '(A,"/data")') trim(base_dir)
             ! Create the directory
             call system("mkdir -p " // trim(out_dir))
         else

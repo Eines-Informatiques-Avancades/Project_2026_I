@@ -19,6 +19,7 @@ make run OUT_DIR=$TMPDIR #
 
 # Create folder for the job
 mkdir -p $SGE_O_WORKDIR/results_archive/$JOB_ID #
+cp $SGE_O_WORKDIR/input.dat $SGE_O_WORKDIR/results_archive/$JOB_ID/ #
 
 # Copy results from $TMPDIR to working directory
 cp -r $TMPDIR/data $SGE_O_WORKDIR/results_archive/$JOB_ID/ #

@@ -1,7 +1,6 @@
 #!/bin/bash
 #$ -N MC_Polymer
-#$ -pe smp 1 
-#$ -q cerqt01.q
+#$ -q cerqt02.q
 #$ -S /bin/bash
 #$ -cwd
 #$ -o cluster_out.log
@@ -13,6 +12,7 @@
 
 # Load profile
 source /etc/profile #
+module load openmpi/4.1.6_gcc-13.3.0 #
 
 # Execute full pipeline, but writing data to $TMPDIR for better performance
 make run OUT_DIR=$TMPDIR #

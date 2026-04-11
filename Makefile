@@ -3,7 +3,7 @@
 # Global config and mode selection
 # Default mode is sequential. Override via CLI: "make MODE=parallel"
 # Default number of cores is 4. Override via CLI: "make NCORES=8"
-MODE ?= sequential
+MODE ?= parallel
 NCORES ?= 4
 
 # Build directory
@@ -27,6 +27,9 @@ ifeq ($(MODE),sequential)
     RUN_CMD     := ./$(TARGET_EXEC) $(DATA_DIR) < $(INPUT_FILE)
     CLEAN_CMD   := $(MAKE) -f src/sequential/sequential.mk clean-seq
 
+    # Choose NCores to run on cluster (1 in sequential)
+    QSUB_CORES  := -pe smp 1
+
 else ifeq ($(MODE),parallel)
     # Include parallel rules
     include src/parallel/parallel.mk
@@ -35,6 +38,9 @@ else ifeq ($(MODE),parallel)
     TARGET_EXEC := $(PAR_EXEC)
     RUN_CMD     := mpirun -np $(NCORES) ./$(TARGET_EXEC) $(DATA_DIR) < $(INPUT_FILE)
     CLEAN_CMD   := $(MAKE) -f src/parallel/parallel.mk clean-par 
+
+    # Choose NCores to run on cluster (NCORES in parallel)
+    QSUB_CORES  := -pe smp $(NCORES)
 
 else
     $(error "Invalid MODE. Use MODE=sequential or MODE=parallel")
@@ -144,7 +150,7 @@ sync-up:
 # Push code and submit the job (including compilation ofc)
 run-cluster: sync-up
 	@echo "Compiling and submitting job on cluster..."
-	ssh $(CLUSTER_USER)@$(CLUSTER_HOST) "source /etc/profile && cd $(CLUSTER_DIR) && qsub -M $(CLUSTER_EMAIL) submit.sub"
+	ssh $(CLUSTER_USER)@$(CLUSTER_HOST) "source /etc/profile && cd $(CLUSTER_DIR) && qsub $(QSUB_CORES) -M $(CLUSTER_EMAIL) submit.sub"
 	@echo "Job submitted! Use 'make check-cluster' to check status."
 
 # Pull results back from cluster

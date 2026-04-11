@@ -12,13 +12,13 @@
 
 
 # Load profile
-source /etc/profile
+source /etc/profile #
 
 # Execute full pipeline, but writing data to $TMPDIR for better performance
-make run OUT_DIR=$TMPDIR
+make run OUT_DIR=$TMPDIR #
 
 # Create folder for the job
-mkdir -p $SGE_O_WORKDIR/results_archive/$JOB_ID
+mkdir -p $SGE_O_WORKDIR/results_archive/$JOB_ID #
 
 # Copy results from $TMPDIR to working directory
-cp -r $TMPDIR/data $SGE_O_WORKDIR/results_archive/$JOB_ID/
+cp -r $TMPDIR/data $SGE_O_WORKDIR/results_archive/$JOB_ID/ #

@@ -1,0 +1,7 @@
+# Set the default behavior: let Git auto-detect text files
+* text=auto
+
+# Force LF (Linux line endings) for all shell and submission scripts
+*.sub text eol=lf
+*.sh text eol=lf
+*.bash text eol=lf

@@ -28,7 +28,7 @@ ifeq ($(MODE),sequential)
     CLEAN_CMD   := $(MAKE) -f src/sequential/sequential.mk clean-seq
 
 else ifeq ($(MODE),parallel)
-    # Include parallel rules (for the future)
+    # Include parallel rules
     include src/parallel/parallel.mk
     
     # Mappings
@@ -150,6 +150,7 @@ run-cluster: sync-up
 # Pull results back from cluster
 sync-down:
 	@echo "Fetching results from cluster..."
+	mkdir -p ./results/
 	rsync -avz $(CLUSTER_USER)@$(CLUSTER_HOST):$(CLUSTER_DIR)/results_archive/ ./results/cluster_archive/
 
 check-cluster:

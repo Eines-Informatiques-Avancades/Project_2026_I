@@ -95,7 +95,7 @@ program mainglobal
     call shiftLenJon()
     ! write(91, *) 'RC, ECUT:', RC, ECUT
     call totEnergy(En, Eb, Enb)     
-    write(91, *), "Initial Enb, Eb, En:", Enb, Eb, En
+    write(91, *) "Initial Enb, Eb, En:", Enb, Eb, En
     ! Energies initialization
 
     ! MC evolution

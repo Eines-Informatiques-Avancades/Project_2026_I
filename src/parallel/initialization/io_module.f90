@@ -20,9 +20,7 @@ subroutine init_io(rank)
         if (trim(base_dir) == "") base_dir = "results"
         
         if (rank == 0) then
-            write(out_dir, '(A,"/data")') trim(base_dir)
-            ! Create the directory
-            call system("mkdir -p " // trim(out_dir))
+            out_dir = trim(base_dir)
         else
             ! Keep dummy path to prevent path resolution crashes, but DON'T create the directory
             write(out_dir, '(A,"/replica_",I4.4)') trim(base_dir), rank

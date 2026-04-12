@@ -50,9 +50,17 @@ program mainglobal
     ! Different RNG per replica
     call random_seed(size=nseed)
     allocate(seed(nseed))
+
     do i = 1, nseed
-        seed(i) = 12345 + rank_world*1000 + i
+        if (N_SWAP > 0) then
+            seed(i) = 12345
+        else if (N_SWAP == 0) then
+            seed(i) = 12345 + rank_world*1000 + i
+        else
+            stop "Error: N_SWAP must be >= 0"
+        end if
     end do
+
     call random_seed(put=seed)
     ! Different RNG per replica
 

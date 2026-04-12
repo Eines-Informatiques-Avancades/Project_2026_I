@@ -5,7 +5,7 @@
 109.5		! bond angle (degrees)    
 1.0			! sigma: effective non-bonded atomic size        (LJ reduced units : 3.9 Angstroms)
 1.0			! epsilon: LJ potential well depth               (LJ reduced units : 0.0913 kcal/mol)
-1.0			! mass: mass of the C's                          (LJ reduced units : 14 g/mol) 
+1.0			! mass: mass of the C's                          (LJ reduced units : 14.027 g/mol) 
 1			! shift: 1 or 0 to apply or not a shift to the LJ potential
 2.5			! rc: cutoff radius of non-bonded interactions (in units of simga)
 2.7         ! rv: Verlet radius                            (in units of sigma)

@@ -55,12 +55,12 @@ program mainglobal
     call shiftLenJon()
     write(91, *) 'RC, ECUT:', RC, ECUT
     call totEnergy(En, Eb, Enb)     
-    write(91, *), "Initial Enb, Eb, En:", Enb, Eb, En
+    write(91, *) "Initial Enb, Eb, En:", Enb, Eb, En
     ! Energies initialization
 
     ! MC evolution
     call runMC(ntry, naccept)
-    write(91, *), "Final: ntry, naccept:", ntry, naccept
+    write(91, *) "Final: ntry, naccept:", ntry, naccept
     ! MC evolution
 
     ! Test final energies and acceptance ratio

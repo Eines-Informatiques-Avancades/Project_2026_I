@@ -77,10 +77,12 @@ build: $(TARGET_EXEC)
 $(PRIMARY_DATA): $(TARGET_EXEC) $(INPUT_FILE)
 	@echo "[$(MODE)] Running simulation..."
 	mkdir -p $(DATA_DIR)
-	@echo "Creating replica directories..."
-	@for i in $$(seq 0 $$(($(NCORES) - 1))); do \
-		mkdir -p $(DATA_DIR)/replica_$$(printf "%04d" $$i); \
-	done
+	@if [ "$(MODE)" = "parallel" ]; then \
+		echo "Creating replica directories..."; \
+		for i in $$(seq 0 $$(($(NCORES) - 1))); do \
+			mkdir -p $(DATA_DIR)/replica_$$(printf "%04d" $$i); \
+		done; \
+	fi
 	$(RUN_CMD)
 
 # "make run" will only run if the data doesn't exist yet

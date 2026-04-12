@@ -45,6 +45,7 @@ module mcloop
 
     contains
 
+    ! Adrián, Adrià, Jonathan
     subroutine runMC(rank_world, nproc_world, num_replicas, ntry, naccept, REPLICA_COMM) 
         ! Runs the basic Monte Carlo loops and stages (equilibration, production and sampling)
         integer, intent(in) :: rank_world, nproc_world, num_replicas, REPLICA_COMM
@@ -89,6 +90,7 @@ module mcloop
         end do
     end subroutine
 
+    ! Adrián, Adrià, Jonathan
     subroutine MC_trial_step(k, R_old, phi_old, deltaPhi, dE, REPLICA_COMM)
         ! Implements a single MC trial step, that is,
         ! it proposes to change a single dihedral and computes the
@@ -182,6 +184,7 @@ module mcloop
         ! print*, "dE(torsion)", utors_new_k - utors_old_k
     end subroutine
 
+    ! Adrián, Adrià, Jonathan
     subroutine accept_reject(k, R_old, deltaPhi, phi_old, dE, ntry, naccept, E_new, REPLICA_COMM)
         ! Decides wether or not to accept the proposed change of the system given
         ! by a change in the k-th dihedral by an amount deltaPhi.
@@ -230,6 +233,7 @@ module mcloop
         end if
     end subroutine accept_reject
 
+    ! Adrià
     subroutine sample(step, rank, nproc_world)
         ! Extracts data during the "production" phase for statistical analysis
         implicit none
@@ -287,6 +291,7 @@ module mcloop
         end if
     end subroutine sample
 
+    ! Adrià
     subroutine replica_exchange(rank_world, nproc_world, num_replicas, step)
         use nonBonded, only: new_vlist
         implicit none

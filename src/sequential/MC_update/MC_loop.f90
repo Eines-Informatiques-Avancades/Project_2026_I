@@ -44,7 +44,8 @@ module mcloop
 
     contains
 
-    subroutine runMC(ntry, naccept) 
+    ! Adrián, Adrià, Jonathan
+    subroutine runMC(ntry, naccept)
         ! Runs the basic Monte Carlo loops and stages (equilibration, production and sampling)
         integer :: i, j, k, n_mcs
         integer, intent(inout) :: ntry, naccept
@@ -76,6 +77,7 @@ module mcloop
         end do
     end subroutine
 
+    ! Adrián, Adrià, Jonathan
     subroutine MC_trial_step(k, R_old, phi_old, deltaPhi, dE, delta_enb, delta_utors)
         ! Implements a single MC trial step, that is,
         ! it proposes to change a single dihedral and computes the
@@ -142,6 +144,7 @@ module mcloop
         ! print*, "dE(torsion)", utors_new_k - utors_old_k
     end subroutine
 
+    ! Adrián, Adrià, Jonathan
     subroutine accept_reject(k, R_old, deltaPhi, phi_old, delta_enb, delta_utors, dE, ntry, naccept, E_new, Enb_new, Eb_new)
         ! Decides wether or not to accept the proposed change of the system given
         ! by a change in the k-th dihedral by an amount deltaPhi.
@@ -191,6 +194,7 @@ module mcloop
         end if
     end subroutine accept_reject
 
+    ! Adrià
     subroutine sample(step)
         ! Extracts data during the "production" phase for statistical analysis
         implicit none

@@ -4,6 +4,7 @@ module centerPolymer
     implicit none
     double precision :: rcm(3)=0.d0, displ(3)=0.d0
     contains
+        ! Jonathan
         subroutine shiftPolymer(displ)
             implicit none
             integer :: i
@@ -15,6 +16,7 @@ module centerPolymer
         end subroutine shiftPolymer
 
 
+        ! Jonathan
         subroutine computeCOM(rcm)
             implicit none
 
@@ -24,6 +26,7 @@ module centerPolymer
         end subroutine computeCOM
 
 
+        ! Jonathan
         subroutine centerInBox()
             implicit none
             

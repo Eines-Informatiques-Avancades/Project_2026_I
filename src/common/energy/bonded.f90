@@ -13,6 +13,7 @@ module bonded
 
     contains
 
+    ! Adrián
     subroutine enerTorsion(dihedral_index, utors)
         ! Computes the torsion energy contribution of one dihedral, from:
         ! William L. Jorgensen, David S. Maxwell, and Julian Tirado-Rives
@@ -40,6 +41,7 @@ module bonded
                 0.5d0*V3*(1 + cos(3.d0*dihedral))
     end subroutine enerTorsion
 
+    ! Adrián, Adrià
     subroutine enerBonded(eb)
         ! Computes the total bonded energy (sum of the torsion energy of each dihedral).
         
@@ -50,16 +52,9 @@ module bonded
         character(len=256) :: out_dir
         character(len=512) :: filepath
 
-        ! Instead of hardcoding the output file directory, it is obtained from the first CLI argument
-        ! First we get the argument
-        ! filepath = get_filepath("dihedrals.dat")
-
         eb = 0.d0
-        ! open(30, file = trim(filepath), status="unknown", position="append", action="write")
-        ! write(30, '(A)') "i, DANG(i), utors(i)"
             do i = 1, N - 3
                 call enerTorsion(i, utors)
-                !call writeDihedrals(i, utors)
                 eb = eb + utors
             end do
         close(30)

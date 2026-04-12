@@ -1,6 +1,4 @@
-# =========================
-# Makefile MPI – Parallel Build
-# =========================
+# Authors: Jonathan, Adrián, Adrià
 
 # Compiler
 FC := mpifort

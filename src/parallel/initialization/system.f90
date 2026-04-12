@@ -1,4 +1,5 @@
 module system
+        ! Jonathan, Adrià, Adrián
         implicit none
 
         integer :: N, SHIFT, initRandom, isVlist, MAX_NEIGH, N_SWAP

@@ -13,6 +13,7 @@ module energy
 
     contains
 
+    ! Adrián, Jonathan
     subroutine totEnergy(En, Eb, Enb)
         ! Computes the total energy of the system, considering both the bonded and nonbonded interactions.
         ! It also gives back the total bonded and non-bonded energies separatedly.

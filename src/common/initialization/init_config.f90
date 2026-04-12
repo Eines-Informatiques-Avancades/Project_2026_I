@@ -4,6 +4,7 @@ module init_config
         implicit none
 
         contains
+                ! Jonathan
                 subroutine allocateSystem()
                         allocate(R(3,N))
 
@@ -12,6 +13,7 @@ module init_config
                         end if
                 end subroutine allocateSystem
 
+                ! Jonathan
                 subroutine initDihedrals()
                         double precision :: r
                         integer :: i
@@ -32,6 +34,7 @@ module init_config
                         end if
                 end subroutine initDihedrals
 
+                ! Jonathan
                 subroutine initPolymer()
                         integer :: i
                         double precision :: b1(3), b2(3)
@@ -68,6 +71,7 @@ module init_config
                         end do
                 end subroutine initPolymer
 
+                ! Jonathan
                 subroutine cross(a,b,c)
                         ! Computes the cross product c = a x b
                         double precision, intent(in) :: a(3), b(3)

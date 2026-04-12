@@ -1,16 +1,13 @@
 program mainglobal
 
     use mpi
-    ! Initialization modules (@J-dot-Barrientos)
     use io_module
     use init_config
     use centerPolymer
     use system
-    ! Energy modules (@AdrianLLJ)
     use nonBonded
     use bonded
     use energy
-    ! MC modules (@J-dot-Barrientos, @AdrianLLJ, @cooligula)
     use mcproposal
     use mcloop
 

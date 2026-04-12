@@ -9,6 +9,7 @@ module mcproposal
 
     contains
 
+    ! Jonathan, Adrián, Adrià
     subroutine proposeDihedral(k, deltaPhi)
         ! Selects which dihedral to change, proposes a change
         ! of the angle and identifies which 4 particles define the dihedral
@@ -25,6 +26,7 @@ module mcproposal
         deltaPhi = (2.d0*r - 1.d0) * maxDih
     end subroutine proposeDihedral
 
+    ! Jonathan, Adrián, Adrià
     subroutine rotatePart(k, deltaPhi)
         ! Rotates particles k+3 to N by deltaPhi on a unit sphere,
         ! where k corresponds to the k-th dihedral.

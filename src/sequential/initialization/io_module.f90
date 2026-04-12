@@ -7,6 +7,7 @@ character(len=256), save :: out_dir
 
 contains
 
+! Adrià
 subroutine init_io()
         ! Read the command line argument
         call get_command_argument(1, out_dir)
@@ -15,6 +16,7 @@ subroutine init_io()
         if (trim(out_dir) == "") out_dir = "."
 end subroutine init_io
 
+! Adrià
 function get_filepath(filename) result(filepath)
         ! Helper function: Takes "name.dat" and returns "build/results/name.dat"
         character(len=*), intent(in) :: filename
@@ -23,6 +25,7 @@ function get_filepath(filename) result(filepath)
         filepath = trim(out_dir) // "/" // trim(filename)
 end function get_filepath
 
+! Jonathan
 subroutine readInput()
         ! open(10, file = "input.dat")
         ! read(10,*) N
@@ -75,6 +78,7 @@ subroutine readInput()
 
 end subroutine readInput
 
+! Jonathan
 subroutine writeXYZ(filename, iframe)
         ! Writes snapshot of the system in the current state (iframe) to visualize in VMD.
         ! We work in unwrapped coordinates R, but apply PBC to R for visualization only.

@@ -5,6 +5,8 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 
+# Author: Adrià Brú
+
 # Get CWD
 BASE_DIR=$SLURM_SUBMIT_DIR
 JOB_WORKSPACE="${BASE_DIR}/runs/job_${SLURM_JOB_ID}"

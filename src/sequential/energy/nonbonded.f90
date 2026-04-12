@@ -35,6 +35,7 @@ module nonBonded
 
     ! ---FIRST SECTION
 
+    ! Adrián
     subroutine shiftLenJon()
         ! Sets the energy shift for the Lennard-Jones potential.
         ! This subroutine should be called only once, prior to the MC simulation.
@@ -50,6 +51,7 @@ module nonBonded
         end if
     end subroutine shiftLenJon
 
+    ! Adrián
     subroutine enerLenJon(r2, enij)
         ! Computes the Lennard-Jones interaction between two non-bonded atoms
         ! separated by a squared distance r2, with a cutoff RC and shift.
@@ -72,6 +74,7 @@ module nonBonded
         end if
     end subroutine enerLenJon
 
+    ! Adrián
     subroutine minImgConv(dx, dy, dz)
         ! Applies the minimum image convention to assign Lennard-Jones
         ! interactions between pairs of particles in a bulk system.
@@ -85,6 +88,7 @@ module nonBonded
         if (abs(dz).gt.HBOX) dz = dz - sign(BOX, dz)
     end subroutine minImgConv
 
+    ! Adrián
     subroutine enerPart(Xi, Yi, Zi, I, Jb, enI)
         ! Computes the non-bonded energy contribution of one particle due to all other
         ! interacting particles (i.e. within the cutoff region).
@@ -121,6 +125,7 @@ module nonBonded
         end do
     end subroutine enerPart
 
+    ! Adrián
     subroutine enerNonBond(enb)
         ! Computes the total non-bonded energy of the system due to each interacting particle.
         ! It allows to make the computation with or without Verlet lists (via the global variable isVlist).
@@ -155,6 +160,7 @@ module nonBonded
     ! subroutines from the different sections (since they are all related to the non-bonded interactions)
     ! ----------------------------------------------------------------------------------------------------
 
+    ! Adrián
     subroutine checkUpdateVlist()
         ! Checks if the Verlet lists needs to be recomputed pre/post a dihedral rotation.
         !  The subroutine checks which particle has moved the most after a rotation of 1 diherdral.
@@ -211,6 +217,7 @@ module nonBonded
 
     ! end subroutine checkUpdateVlist
 
+    ! Adrián
     subroutine allocVerlet()
         ! Blind allocation: trial and error allocation of the number of neigbours for the
         ! Verlet list; depends on the density of particles given an initial configuration
@@ -222,6 +229,7 @@ module nonBonded
         allocate(list(N, MAX_NEIGH))
     end subroutine allocVerlet
 
+    ! Adrián
     subroutine new_vlist()
         !---
         ! Creates/reconstructs the Verlet list of each non-bonding interacting particle with PBC.
@@ -271,6 +279,7 @@ module nonBonded
         end do
     end subroutine new_vlist
 
+    ! Adrián
     subroutine enerPartVlist(Xi, Yi, Zi, I, k, enI)
         ! Computes the non-bonded energy of particle I by the interaction with
         ! all its Verlet neigbouring particles.  It does the equivalent of subroutine 'enerPart'.

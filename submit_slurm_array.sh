@@ -9,6 +9,8 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=Slurm
 
+# Author: Adrià Brú
+
 # Parameter grid (6 temps x 4 angles = 24 combinations)
 TEMPS=(0.6 0.8 1.0 1.2 1.4 1.6)
 ANGLES=(5.0 10.0 15.0 20.0)
@@ -39,7 +41,6 @@ cd ${JOB_WORKSPACE}
 #ln -s ${BASE_DIR}/.venv ${JOB_WORKSPACE}/.venv
 
 # Modify input.dat (Line 2 for Temp, Line 11 for maxDih)
-# We use '|' as the sed delimiter so the slashes in the comments don't break it
 sed -i "2s|.*|${CURRENT_TEMP}                     ! temperature (in units of epsilon/k_B; k_B = 0.0019872041 kcal/mol*K)|" input.dat
 sed -i "11s|.*|${CURRENT_ANGLE}                     ! maxDih: maximum dihedral angle variation (degrees)|" input.dat
 

@@ -11,7 +11,7 @@ The project uses a `Makefile` that handles compiling, running, dependency manage
 ### List of participants and tasks:
 
     JONATHAN BARRIENTOS ANDRADE (J-dot-Barrientos) - Initialization
-    ADRIÀ BRÚ I CORTÉS (cooligula) - Main Leader / Post processing and statistics
+    ADRIÀ BRÚ I CORTÉS (cooligula/Adrià/Adri) - Main Leader / Post processing and statistics
     ADRIAN LLAMAS JARAMILLO (AdrianLLJ) - Energy
 
 ## Project structure

@@ -62,7 +62,17 @@ This command will:
 3. Install the required dependencies (numpy, matplotlib).
 4. Generate the plots and save them to results/plots/.
 
-### 3. Cleanup
+### 3. Archive Results
+To archive the obtained results:
+```bash
+make snapshot
+```
+This will archive the results tagged with the date and time of the snapshot. If a particular name is desired instead:
+```bash
+make snapshot my_snapshot_name
+```
+
+### 4. Cleanup
 ```bash
 make clean      # Deletes data and build folders
 make clean-all  # Deletes data, build folders, and the Python .venv
@@ -111,7 +121,7 @@ make check-cluster
 ```bash
 make plot-cluster
 ```
-Once you receive the completion email, run this command. It will download the generated data from the cluster to your local results/cluster_archive/ folder, locate the newest run, and generate the plots locally using your. venv.
+Once you receive the completion email, run this command. It will download the generated data from the cluster to your local results/cluster_archive/ folder, locate the newest run, and generate the plots locally using your .venv Python binary.
 
 #### Clean Cluster Workspace:
 ```bash

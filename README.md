@@ -23,6 +23,8 @@ To compile and run this code locally, ensure the following dependecies are insta
 * **MPI Library:** `openmpi-bin` and `libopenmpi-dev` (required, including `mpifort`, for parallel/replica simulations)
 * **Python 3:** For plotting, data visualization, and managing the built-in virtual environment (`.venv`).
 * **Make:** To run the automated pipeline natively.
+* **SSH:** For connecting to remote machines (clusters).
+* **rsync:** For synchronizing files between local and remote machines (clusters).
 
 ### Apptainer / Singularity (Optional but Recommended)
 
@@ -67,7 +69,7 @@ The core simulation is controlled by the `input.dat` file, which provides option
 2. **Verlet lists**: `isVlist` controls if neighbor lists speed up non-bonded energy calculations (`1` for yes, `0` for no).
 3. **Serial vs. Parallel (MPI)**: `Makefile` targets the `parallel` version by default. To run serially, use `make MODE=sequential`.
 4. **Replica parallelism**: Controlled by the invocation flag `make NCORES=N` along with `MODE=parallel`.
-5. **Replica exchange**: For replica exchange, set `N_SWAP > 0` in `input.dat` (freq. of exchange). `MAX_TEMP` determines the maximum boundary. If `N_SWAP == 0` but the simulation is running in parallel, it will run as a standard parallel simulation without replica exchange.
+5. **Replica exchange**: For replica exchange, set `N_SWAP > 0` in `input.dat` (freq. of exchange). `MAX_TEMP` determines the maximum boundary. If `N_SWAP == 0` but the simulation is running in parallel, it will run as a standard replica parallel simulation without replica exchange.
 6. **Energy loop parallelism**: Set `nproc_per_replica` inside `input.dat` to split atomic iterations along multiple ranks.
 
 **Example combination**: Running an 8-core replica computation:
